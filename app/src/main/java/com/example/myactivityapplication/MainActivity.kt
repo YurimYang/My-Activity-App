@@ -1,8 +1,11 @@
 package com.example.myactivityapplication
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.SystemClock
 //import androidx.constraintlayout.widget.Constraints
 import androidx.core.content.ContextCompat
 import androidx.work.Constraints
@@ -43,6 +46,20 @@ class MainActivity : AppCompatActivity() {
                 .build()
 
             WorkManager.getInstance(this).enqueue(workRequest)
+        }
+
+        binding.btnAlarm.setOnClickListener{
+            val intent = Intent(this, AlarmReceiver::class.java)
+            val pendingIntent = PendingIntent.getBroadcast(
+                this, 0, intent, PendingIntent.FLAG_IMMUTABLE
+            )
+            intent.putExtra("message", "Exact Alarm Trigger")
+
+            getSystemService(AlarmManager::class.java).setExact(
+                AlarmManager.RTC_WAKEUP,
+                    SystemClock.elapsedRealtime() +10 * 1000,
+                    pendingIntent
+            )
         }
     }
 }
